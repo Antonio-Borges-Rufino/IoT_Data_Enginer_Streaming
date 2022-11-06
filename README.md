@@ -8,7 +8,7 @@
   -> 1. Colocar sensores de temperatura em lugares estratégicos   
   -> 2. Coletar dados dos sensores em um espaço de tempo de 1 hora  
   -> 3. Guardar esse dados em uma base de dados de fácil acesso  
-  -> 4. Gerar um software cliente que acesse esses dados de forma interativa para que os pesquisadores possam fazer o monitoramento
+  -> 4. Apresentar os dados de forma interativa através de uma interface gráfica
 3. Levando em consideração as especificações do projeto, decidiu-se usar um sistema big data de stream.
 
 # Arquitetura do projeto
