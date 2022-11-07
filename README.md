@@ -20,6 +20,25 @@
 5. O spark não vai necessariamente precisar fazer algum tipo de análise nos dados, apesar de que isso pode ser muito bem vindo, pode-se futuramente trabalhar em identificações de anomalias.
 6. Por fim, o spark deve salvar o registro no banco de dados redis, essa base de dados foi escolhida pois é extremamente rápida e simples, podendo facilmente se utilizada na persistencia de dados em stream.
 7. Para facilitar a visualização dos dados, foi construída uma interface gráfica que deve mostrar graficamente e de qualquer máquina com acesso ao redis as informações em tempo real.
+
+# Obtendo os dados e o problema do MQTT
+![](https://github.com/Antonio-Borges-Rufino/IoT_Data_Enginer_Streamin/blob/main/SENSOR%201.PNG)
+1. Apesar do projeto ser baseado em uma conversa intermediada entre os sensores e o kafka pelo MQTT, na prática isso é dificil de fazer se voce não tem os sensores nem um serviço MQTT online.
+2. Para contornar esse problema, simulei a parte do sensor+MQTT-Broker através de um código python.
+3. Para não sair muito da idéia, extrai informações reais de temperatura das localizações mostrada na imagem acima, portanto, admiti-se que esses são os sensores e que os dados retirados de temperatura são os dados fornecidos.
+4. As imagens de satélite são de estrutura temporais diárias, portanto, teoricamente não teríamos como extrair em horas, como o sensor deve fornecer. Para contornar esse problema, foi baixada imagens diárias entre os anos de 2003 e 2013. Para extrair os pontos do mapa, usou-se apenas as 2 primeiras casas decimais após a vírgula, para poder ficar em conformância com a resolução do satélite.
+5. A função que faz o download da imagem e a extração dos pontos é descrita abaixo.
+```
+def get_data(nome):
+  link="https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/MUR-JPL-L4-GLOB-v4.1/"+nome+"090000-JPL-L4_GHRSST-SSTfnd-MUR-GLOB-v02.0-fv04.1.nc"
+  subprocess.run(["wget",'-c','-O'+nome,'--user=XXXXXXX','--password=XXXXX',link]) 
+  temp = xr.open_dataset("/content/"+nome)
+  sensor1 = temp.sel(lat=-2.90,lon=-60.56).analysed_sst.data[0]
+  sensor2 = temp.sel(lat=-2.50,lon=-55.00).analysed_sst.data[0]
+  return [[-2.90,-60.56,sensor1],[-2.50,-55.00,sensor2]]
+```
+
+
 ```
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1 /home/hadoop/Spark-GET-MQTT-Kafka-Data.py
 ``` 
