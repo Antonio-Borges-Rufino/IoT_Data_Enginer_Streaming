@@ -37,11 +37,11 @@ def get_data(nome):
   sensor2 = temp.sel(lat=-2.50,lon=-55.00).analysed_sst.data[0]
   return [[-2.90,-60.56,sensor1],[-2.50,-55.00,sensor2]]
 ```
-  -> É passado como parâmetro o nome do arquivo, a construção do nome vai ser explicado mais adiante.
-  -> Depois, usa-se o nome do arquivo dentro do link de download, optei por colocar em uma variável separada para poder ficar mais organizado
-  -> A função subprocess.rum é quem realiza comandos do terminal no python, ela quem vai baixar a imagem rastel do satélite
-  -> xr.open_dataset é uma função de uma biblioteca responsável por fazer varreduras e extrações em imagens rastel, nela, pode-se trabalhar a maioria dos formatos, como NetCDF, NetCDF4 dentre outras.
-  -> As linhas sesor1 e sensor2 são responsaveis por extrair as informações dos metadados das imagens, nesse caso,usa-se a função sel da biblioteca xarray para extrair a temperatura das coordenadas passadas nos parametros lat e lon
+  -> É passado como parâmetro o nome do arquivo, a construção do nome vai ser explicado mais adiante.  
+  -> Depois, usa-se o nome do arquivo dentro do link de download, optei por colocar em uma variável separada para poder ficar mais organizado.  
+  -> A função subprocess.rum é quem realiza comandos do terminal no python, ela quem vai baixar a imagem rastel do satélite.  
+  -> xr.open_dataset é uma função de uma biblioteca responsável por fazer varreduras e extrações em imagens rastel, nela, pode-se trabalhar a maioria dos formatos, como NetCDF, NetCDF4 dentre outras.  
+  -> As linhas sesor1 e sensor2 são responsaveis por extrair as informações dos metadados das imagens, nesse caso,usa-se a função sel da biblioteca xarray para extrair a temperatura das coordenadas passadas nos parametros lat e lon.  
 
 
 ```
