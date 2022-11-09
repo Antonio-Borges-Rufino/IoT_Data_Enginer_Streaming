@@ -37,12 +37,13 @@ def get_data(nome):
   sensor2 = temp.sel(lat=-2.50,lon=-55.00).analysed_sst.data[0]
   return [[-2.90,-60.56,sensor1],[-2.50,-55.00,sensor2]]
 ```
+6. Explicação do código:  
   -> 1. É passado como parâmetro o nome do arquivo, a construção do nome vai ser explicado mais adiante.  
   -> 2. Depois, usa-se o nome do arquivo dentro do link de download, optei por colocar em uma variável separada para poder ficar mais organizado.  
   -> 3. A função subprocess.rum é quem realiza comandos do terminal no python, ela quem vai baixar a imagem rastel do satélite.  
   -> 4. xr.open_dataset é uma função de uma biblioteca responsável por fazer varreduras e extrações em imagens rastel, nela, pode-se trabalhar a maioria dos formatos,         como NetCDF, NetCDF4 dentre outras.  
   -> 5. As linhas sesor1 e sensor2 são responsaveis por extrair as informações dos metadados das imagens, nesse caso,usa-se a função sel da biblioteca xarray para extrair a temperatura das coordenadas passadas nos parametros lat e lon.    
-6. O código abaixo representa como foi feito o download das imagens e a suas respectivas extrações. Apesar de poder deixar um looping de ano, possuia limitações de tempo, então para deixar menos dificultoso meu trabalho, coloquei o ano como uma variavel setavel. 
+7. O código abaixo representa como foi feito o download das imagens e a suas respectivas extrações. Apesar de poder deixar um looping de ano, possuia limitações de tempo, então para deixar menos dificultoso meu trabalho, coloquei o ano como uma variavel setavel. 
 ```
 ano_i = 2010
 for mes in range(1,13):
@@ -68,7 +69,7 @@ for mes in range(1,13):
   nome = str(ano_i)+str(mes)+".csv"
   data.to_csv(nome)
 ```  
-7. Explicação do código  
+8. Explicação do código  
   -> 1. A variavel ano_i vai receber o ano que a imagem pertence.  
   -> 2. O primei laço for é respectivo aos meses do ano.  
   -> 3. a variavel data vai receber as informações dos 2 pontos para cada dia do mes.  
