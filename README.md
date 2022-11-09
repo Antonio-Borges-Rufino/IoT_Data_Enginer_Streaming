@@ -77,6 +77,29 @@ for mes in range(1,13):
   -> 5. O nome é a junção do ano+mes+dia no link de download explicado anteriormente, por exemplo, 01/10/2010 == 01102010.  
   -> 6. o próximo passo é fazer o donwload e a extração dos pontos a partir da função get_data já explicada, e colocando dentro da variavel data (para o mes todo).  
   -> 7. Depois que todos os meses foram baixados, transformo a variavel data em um dataframe pandas e salvo apenas com o nome ano+mes.csv, esses dados vão ser unidos logo a frente.  
+9. Após a obtenção de todos os dataset mensais de cada ano, todos os arquivos foram zipados juntos para facilitar a manipulação dos datasets.
+10. Com os dataset zipados juntos, coloquei eles no google colab para poder fazer o ultimo processamento dessa fase, que é a criação de um superdataset.
+11. Para deszipar, usei o seguinte comando:
+```
+!unzip data.zip
+```
+12. com todos os dataset prontos, o seguinte código foi executado:
+```
+df_final = pd.DataFrame(data=None,columns=['Lat','Lon','Temp'])
+for ano in [2003,2004,2005,2006,2007,2008,2009,2010]:
+  for mes in range(1,13):
+    arq = "/content/data/"+str(ano)+str(mes)+".csv"
+    df = pd.read_csv(arq,usecols=['Lat','Lon','Temp'])
+    df_final = pd.concat([df_final,df])
+df_final = df_final.reset_index()
+df_final.to_csv("sensor_data.csv")
+```
+13. Explicação do código:  
+  -> 1. A variavel df_final recebe um dataframe pandas vazio com as colunas Lat, Lon e Temp. Essas colunas são referentes a latitude, longitude e temperatura.  
+  -> 2. O laço for vai percorrer todos os anos baixados e o segundo laço todos os meses de cada ano.  
+  -> 3. Como a estrutura dos dataset são ano+mes, basta acessar cada um dos dataset gerados a partir de str(ano)+str(mes)+'.csv' em uma nova variavel e depois concatenar com a variavel df_final, que deve receber todos os dataframes.  
+  -> 4. Após a concatenação, resetei os indexs para que não fique confuso e salvei o novo dataframe.  
+14. O código completo pode ser acessado [aqui](https://github.com/Antonio-Borges-Rufino/IoT_Data_Enginer_Streamin/blob/main/Get_Data_Sensor.ipynb)
 
 ```
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1 /home/hadoop/Spark-GET-MQTT-Kafka-Data.py
