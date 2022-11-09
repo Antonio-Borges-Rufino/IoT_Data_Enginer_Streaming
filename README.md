@@ -99,7 +99,9 @@ df_final.to_csv("sensor_data.csv")
   -> 2. O laço for vai percorrer todos os anos baixados e o segundo laço todos os meses de cada ano.  
   -> 3. Como a estrutura dos dataset são ano+mes, basta acessar cada um dos dataset gerados a partir de str(ano)+str(mes)+'.csv' em uma nova variavel e depois concatenar com a variavel df_final, que deve receber todos os dataframes.  
   -> 4. Após a concatenação, resetei os indexs para que não fique confuso e salvei o novo dataframe.  
-14. O código completo pode ser acessado [aqui](https://github.com/Antonio-Borges-Rufino/IoT_Data_Enginer_Streamin/blob/main/Get_Data_Sensor.ipynb)
+14. O código completo pode ser acessado [aqui](https://github.com/Antonio-Borges-Rufino/IoT_Data_Enginer_Streamin/blob/main/Get_Data_Sensor.ipynb).
+
+# Simulando o sensor + MQTT Broker
 
 ```
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1 /home/hadoop/Spark-GET-MQTT-Kafka-Data.py
