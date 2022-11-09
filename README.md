@@ -37,12 +37,44 @@ def get_data(nome):
   sensor2 = temp.sel(lat=-2.50,lon=-55.00).analysed_sst.data[0]
   return [[-2.90,-60.56,sensor1],[-2.50,-55.00,sensor2]]
 ```
-  -> É passado como parâmetro o nome do arquivo, a construção do nome vai ser explicado mais adiante.  
-  -> Depois, usa-se o nome do arquivo dentro do link de download, optei por colocar em uma variável separada para poder ficar mais organizado.  
-  -> A função subprocess.rum é quem realiza comandos do terminal no python, ela quem vai baixar a imagem rastel do satélite.  
-  -> xr.open_dataset é uma função de uma biblioteca responsável por fazer varreduras e extrações em imagens rastel, nela, pode-se trabalhar a maioria dos formatos, como NetCDF, NetCDF4 dentre outras.  
-  -> As linhas sesor1 e sensor2 são responsaveis por extrair as informações dos metadados das imagens, nesse caso,usa-se a função sel da biblioteca xarray para extrair a temperatura das coordenadas passadas nos parametros lat e lon.  
-
+  -> 1. É passado como parâmetro o nome do arquivo, a construção do nome vai ser explicado mais adiante.  
+  -> 2. Depois, usa-se o nome do arquivo dentro do link de download, optei por colocar em uma variável separada para poder ficar mais organizado.  
+  -> 3. A função subprocess.rum é quem realiza comandos do terminal no python, ela quem vai baixar a imagem rastel do satélite.  
+  -> 4. xr.open_dataset é uma função de uma biblioteca responsável por fazer varreduras e extrações em imagens rastel, nela, pode-se trabalhar a maioria dos formatos,         como NetCDF, NetCDF4 dentre outras.  
+  -> 5. As linhas sesor1 e sensor2 são responsaveis por extrair as informações dos metadados das imagens, nesse caso,usa-se a função sel da biblioteca xarray para extrair a temperatura das coordenadas passadas nos parametros lat e lon.    
+6. O código abaixo representa como foi feito o download das imagens e a suas respectivas extrações. Apesar de poder deixar um looping de ano, possuia limitações de tempo, então para deixar menos dificultoso meu trabalho, coloquei o ano como uma variavel setavel. 
+```
+ano_i = 2010
+for mes in range(1,13):
+  data = list()
+  for dia in range(1,32):
+    if dia < 10:
+      dia_ = '0'+str(dia)
+    else:
+      dia_ = str(dia)
+    if mes < 10:
+      mes_ = '0'+str(mes)
+    else:
+      mes_ = str(mes)
+    nome = str(ano_i)+str(mes_)+str(dia_)
+    try:
+      dados = get_data(nome)
+      data.append(dados[0])
+      data.append(dados[1])
+      subprocess.run(['rm','/content/'+nome])
+    except:
+      print("Erro do dia: {}".format(dia))
+  data = pd.DataFrame(data,columns=['Lat','Lon','Temp'])  
+  nome = str(ano_i)+str(mes)+".csv"
+  data.to_csv(nome)
+```  
+  -> 1. A variavel ano_i vai receber o ano que a imagem pertence.
+  -> 2. O primei laço for é respectivo aos meses do ano.
+  -> 3. a variavel data vai receber as informações dos 2 pontos para cada dia do mes.
+  -> 4. A extração dos pontos é feita dentro do laço dia,que é respectivo para cada dia. Aqui, eu faço uma verificação simples para adicionar 0 ao nome, pois a formatação do link das imagens exige um 0 a esquerda de todo numero menor que 10.
+  -> 5. O nome é a junção do ano+mes+dia no link de download explicado anteriormente, por exemplo, 01/10/2010 == 01102010.
+  -> 6. o próximo passo é fazer o donwload e a extração dos pontos a partir da função get_data já explicada, e colocando dentro da variavel data (para o mes todo).
+  -> 7. Depois que todos os meses foram baixados, transformo a variavel data em um dataframe pandas e salvo apenas com o nome ano+mes.csv, esses dados vão ser unidos logo a frente.
 
 ```
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1 /home/hadoop/Spark-GET-MQTT-Kafka-Data.py
