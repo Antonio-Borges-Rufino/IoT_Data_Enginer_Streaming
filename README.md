@@ -68,13 +68,13 @@ for mes in range(1,13):
   nome = str(ano_i)+str(mes)+".csv"
   data.to_csv(nome)
 ```  
-  -> 1. A variavel ano_i vai receber o ano que a imagem pertence.
-  -> 2. O primei laço for é respectivo aos meses do ano.
-  -> 3. a variavel data vai receber as informações dos 2 pontos para cada dia do mes.
-  -> 4. A extração dos pontos é feita dentro do laço dia,que é respectivo para cada dia. Aqui, eu faço uma verificação simples para adicionar 0 ao nome, pois a formatação do link das imagens exige um 0 a esquerda de todo numero menor que 10.
-  -> 5. O nome é a junção do ano+mes+dia no link de download explicado anteriormente, por exemplo, 01/10/2010 == 01102010.
-  -> 6. o próximo passo é fazer o donwload e a extração dos pontos a partir da função get_data já explicada, e colocando dentro da variavel data (para o mes todo).
-  -> 7. Depois que todos os meses foram baixados, transformo a variavel data em um dataframe pandas e salvo apenas com o nome ano+mes.csv, esses dados vão ser unidos logo a frente.
+  -> 1. A variavel ano_i vai receber o ano que a imagem pertence.  
+  -> 2. O primei laço for é respectivo aos meses do ano.  
+  -> 3. a variavel data vai receber as informações dos 2 pontos para cada dia do mes.  
+  -> 4. A extração dos pontos é feita dentro do laço dia,que é respectivo para cada dia. Aqui, eu faço uma verificação simples para adicionar 0 ao nome, pois a formatação do link das imagens exige um 0 a esquerda de todo numero menor que 10.  
+  -> 5. O nome é a junção do ano+mes+dia no link de download explicado anteriormente, por exemplo, 01/10/2010 == 01102010.  
+  -> 6. o próximo passo é fazer o donwload e a extração dos pontos a partir da função get_data já explicada, e colocando dentro da variavel data (para o mes todo).  
+  -> 7. Depois que todos os meses foram baixados, transformo a variavel data em um dataframe pandas e salvo apenas com o nome ano+mes.csv, esses dados vão ser unidos logo a frente.  
 
 ```
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1 /home/hadoop/Spark-GET-MQTT-Kafka-Data.py
