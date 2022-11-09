@@ -68,6 +68,7 @@ for mes in range(1,13):
   nome = str(ano_i)+str(mes)+".csv"
   data.to_csv(nome)
 ```  
+7. Explicação do código
   -> 1. A variavel ano_i vai receber o ano que a imagem pertence.  
   -> 2. O primei laço for é respectivo aos meses do ano.  
   -> 3. a variavel data vai receber as informações dos 2 pontos para cada dia do mes.  
