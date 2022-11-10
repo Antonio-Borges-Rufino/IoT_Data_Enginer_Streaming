@@ -140,7 +140,22 @@ while True:
                         dataset_posix = 0
                 sleep(5)            
     ano = ano + 1
-```
+```  
+5. Explicando o código:
+  -> 1. A variavel producer recebe o objeto de conexão com o kafka e a variavel df recebe o dataset feito no passo anterior.
+  -> 2. As variaveis ano, mes e dia serão usadas para a key do kafka, por isso elas constroem os laços.
+  -> 3. O laço while True realiza o stream pro kafka, ela so para de enviar informação quando explicitado pelo usuário, no nosso caso, parando a célula.
+  -> 4. Existem 3 laços temporais, que vão servir para a construção da key, que deve ser ano-mes-dia-hora-sensor, nesse caso, a variavel ano é estática.
+  -> 5. A variavel dataset_posix é a variavel que vai controlar o percurso dentro do pandas dtaframe, inclusive, ela vai ser resetada quando a quantidade total de linhas do dataset for usada, fazendo que volte a linha 0 de novo.
+  -> 6. A verificação feita é so para distinguir qual sensor está mandando a mensagem, caso seja uma posição par é o sensor1, e impar é o sensor2.
+  -> 7. Dentro da verificação, cria a key do kafka, já mostrada, depois codifica para byte, que é o padrão aceito pelo kafka.
+  -> 8. A variavel sensor traz as informações do dataset presentes na linha que dataset_posix está apontando através da função iloc.
+  -> 9. Como a informação vem com todas as tabelas, extrai-se apenas a coluna referente ao valor de temperatura, já que sabemos a lat e lon do sensor que vai mandar a informação.
+  -> 10. Depois transforma o dado em byte também e envia a mensagem para o kafka através da função send. 
+  -> 11. No kafka, o tópico data_sensor vai receber a informção,sendo ela, qual sensor enviou a mensagem, em que momento do tempo isso foi enviado e qual a informação que foi enviada (temperatura).
+  -> 12. A mesma coisa é feita no else, mudando apenas o sensor.
+  -> 13. Depois de rodar o código e enviar a mensagem, o programa descansa 5 segundos com o método sleep() e depois refaz tudo de novo até ser explicitamente parado pelo usuário.
+6. Outro código com sleep maior e uma formatação diferente pode ser encontrado junto desse explicado [aqui](https://github.com/Antonio-Borges-Rufino/IoT_Data_Enginer_Streamin/blob/main/Sensor-MQTT-Insert-Kafka.ipynb).
 
 ```
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1 /home/hadoop/Spark-GET-MQTT-Kafka-Data.py
