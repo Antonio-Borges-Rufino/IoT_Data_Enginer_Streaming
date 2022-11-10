@@ -157,6 +157,9 @@ while True:
   -> 13. Depois de rodar o código e enviar a mensagem, o programa descansa 5 segundos com o método sleep() e depois refaz tudo de novo até ser explicitamente parado pelo usuário.  
 6. Outro código com sleep maior e uma formatação diferente pode ser encontrado junto desse explicado [aqui](https://github.com/Antonio-Borges-Rufino/IoT_Data_Enginer_Streamin/blob/main/Sensor-MQTT-Insert-Kafka.ipynb).
 
+# Spark streaming capturando dados do kafka e persistindo no redis
+1. 
+
 ```
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1 /home/hadoop/Spark-GET-MQTT-Kafka-Data.py
 ``` 
