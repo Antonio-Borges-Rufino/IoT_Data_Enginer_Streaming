@@ -17,11 +17,6 @@ spark.sparkContext.setLogLevel("OFF")
 
 kafka_df = spark.readStream.format("kafka").option("kafka.bootstrap.servers", "localhost:9092").option("subscribe", "data_sensor").option("maxFilesPerTrigger",1).load()
       
-def func_call(df,batch_id):
-  df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
-  requests = df.rdd.map(lambda x: x.value).collect()
-  print(requests)
-  
 class RowPrinter:
     def open(self, partition_id, epoch_id):
         #print("Opened %d, %d" % (partition_id, epoch_id))
