@@ -186,8 +186,39 @@ query = kafka_df.writeStream.format("kafka").option("checkpointLocation","/tmp/s
   -> 2. A função checkpointLocation mostra a pasta temporaria do hdfs.  
   -> 3. A função foreach() vai executar uma classe, que nesse caso é RowPrinter(), e nessa classe vão ser passadas as informações de cada que o spark le do kafka conforme o parâmetro maxFilesPerTrigger. E nessa classe também que vão ser feitos os processamentos dos dados.  
   -> 4. A função processingTime determina em segundos a quantidade de tempo que o spark vai contatar o kafka sobre novas mensagens.  
-  -> 5. A função awaitTermination faz com que o código só seja parado caso isso aconteça explicitamente pelo usuário usando o cntrl+c ou através de alguma condição de parada imposta na classe RowPrinter que implemente a função query.stop().   
-
+  -> 5. A função awaitTermination faz com que o código só seja parado caso isso aconteça explicitamente pelo usuário usando o cntrl+c ou através de alguma condição de parada imposta na classe RowPrinter que implemente a função query.stop(). 
+9. A classe que é passada como parâmetro possui um ciclo de vida bem estabelecido, e é de extrema importancia para poder fazer a manutenção dos dados em ambientes que você não pode fazer execuções em paralelo, como é o caso do databricks. A classe é descrita melhor abaixo:
+```
+class RowPrinter:
+    def open(self, partition_id, epoch_id):
+        #print("Opened %d, %d" % (partition_id, epoch_id))
+        return True
+    def process(self, row):
+        #redis.set(row.value.decode('UTF-8'),str(row.timestamp))
+        try:
+            redis_insert = redis.Redis('localhost',port=6379)
+            key = row.key.decode('UTF-8')
+            value = row.value.decode('UTF-8')
+            redis_insert.set(key,value)
+            print("Dados inseridos: key {} Value {}".format(key,value))
+        except:
+            print("Erro")
+    def close(self, error):
+        print("Closed with error: %s" % str(error))
+        #query.stop()
+```
+10. Explicando o código:  
+  -> 1. A classe precisa implementar obrigatóriamente 3 métodos, são eles; o open, o process e o close.  
+  -> 2. O método open é o primeiro a ser chamado, ele da informações de qual linha está sendo pega dentro da pilha. O método process é quem efetivamente vai fazer a manutenção dos dados, no nosso caso, usei dentro de um bloco try except a inserção das linhas no banco redis através da função redis. É importante observar que redis.Redis precisa ser instanciado toda vez, pois a classe principal também precisa ser sempre instanciada.  
+  -> 3. Ainda em process, é descodificada a key e o value, que são entregues no formato byte e inseridas diretamente no banco redis utilizando a função insert.  
+  -> 4. Finalizando com o método close, que tem a função de apresentar algum erro caso exista, ou alguma mensagem de término de processamento.  
+11. Com o código finalizado, basta salvar e executar dentro do yarn utilizando o spark-submit:  
 ```
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1 /home/hadoop/Spark-GET-MQTT-Kafka-Data.py
 ``` 
+12. Perceb-se a utilização da tag --packages, é ela quem indica o jar do tipo kafka. Esse jar não é nativo, portanto deve-se usar o apontador, e após a indicação do jar, coloca o caminho do arquivo python com o código pyspark e executa.
+13. O código vai ficar esperando até que o código de insert no kafka seja executado também.
+14. Para ver a construção completa do código, acesse [aqui](https://github.com/Antonio-Borges-Rufino/IoT_Data_Enginer_Streamin/blob/main/Spark-GET-MQTT-Kafka-Data.py).
+
+# Interface gráfica de acesso
+1.
