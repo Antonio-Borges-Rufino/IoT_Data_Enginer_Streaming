@@ -158,7 +158,35 @@ while True:
 6. Outro código com sleep maior e uma formatação diferente pode ser encontrado junto desse explicado [aqui](https://github.com/Antonio-Borges-Rufino/IoT_Data_Enginer_Streamin/blob/main/Sensor-MQTT-Insert-Kafka.ipynb).
 
 # Spark streaming capturando dados do kafka e persistindo no redis
-1. 
+1. O código do cliente spark foi feito totalmente em python e deve ser executando usando o spark-submit.
+2. Aqui, o programa python vai ficar buscando novas mensagens do kafka de 15 em 15 segundos, como o insert no kafka se dá em tempos de 5 segundos, vai aparecer no terminal 3 linhas por vez, mas mesmo assim vai inserir normalmente no banco.
+3. O código abaixo cria o spark session para o projeto:
+```
+spark = SparkSession
+spark = spark.builder
+spark = spark.appName("teste")
+spark = spark.getOrCreate()
+
+spark.sparkContext.setLogLevel("OFF")
+```
+4. Foi retirado o log do spark no código acima, pois dificulta a visualização do que o programa está fazendo.
+5. Depois, chama-se a leitura em stream do kafka utilizando o readStream do spark:
+```
+kafka_df = spark.readStream.format("kafka").option("kafka.bootstrap.servers", "localhost:9092").option("subscribe", "data_sensor").option("maxFilesPerTrigger",1).load()
+```
+6. Explicando o código:  
+  -> 1. Kafka é passado como modo de leitura do spark, depois em option, é passado a porta onde vai se escutar o servidor kafka.  
+  -> 2. Em subscribe, colocamos o tópico que queremos obter as mensagens, finalizando colocando uma quantidade de leitura de registros em 1, ou seja, cada registro vai ser lido individualmente.  
+7. Após isso, começamos efetivamente a ler os dados que chegam do serviço de mensageria, utilizando:
+```
+query = kafka_df.writeStream.format("kafka").option("checkpointLocation","/tmp/spark").foreach(RowPrinter()).trigger(processingTime="15 seconds").start().awaitTermination()
+```
+8. Explicando o código:  
+  -> 1. A função writeStream.format indica qual o tipo de leitura que o spark deve ter. Por não ser padrão do spark, o tipo kafka deve ser passado como parametro na execução do código, isso vai ser demonstrado mais adiante.  
+  -> 2. A função checkpointLocation mostra a pasta temporaria do hdfs.  
+  -> 3. A função foreach() vai executar uma classe, que nesse caso é RowPrinter(), e nessa classe vão ser passadas as informações de cada que o spark le do kafka conforme o parâmetro maxFilesPerTrigger. E nessa classe também que vão ser feitos os processamentos dos dados.  
+  -> 4. A função processingTime determina em segundos a quantidade de tempo que o spark vai contatar o kafka sobre novas mensagens.  
+  -> 5. A função awaitTermination faz com que o código só seja parado caso isso aconteça explicitamente pelo usuário usando o cntrl+c ou através de alguma condição de parada imposta na classe RowPrinter que implemente a função query.stop().   
 
 ```
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1 /home/hadoop/Spark-GET-MQTT-Kafka-Data.py
