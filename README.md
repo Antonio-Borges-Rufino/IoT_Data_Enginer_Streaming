@@ -100,6 +100,7 @@ df_final.to_csv("sensor_data.csv")
   -> 3. Como a estrutura dos dataset são ano+mes, basta acessar cada um dos dataset gerados a partir de str(ano)+str(mes)+'.csv' em uma nova variavel e depois concatenar com a variavel df_final, que deve receber todos os dataframes.  
   -> 4. Após a concatenação, resetei os indexs para que não fique confuso e salvei o novo dataframe.  
 14. O código completo pode ser acessado [aqui](https://github.com/Antonio-Borges-Rufino/IoT_Data_Enginer_Streamin/blob/main/Get_Data_Sensor.ipynb).
+15. Os dados zipados podem ser acessados [aqui](https://github.com/Antonio-Borges-Rufino/IoT_Data_Enginer_Streamin/blob/main/data.zip), enquanto os dados únicos em um único DF podem ser acessados [aqui](https://github.com/Antonio-Borges-Rufino/IoT_Data_Enginer_Streamin/blob/main/sensor_data.csv)
 
 # Simulando o sensor + MQTT Broker
 
