@@ -103,6 +103,44 @@ df_final.to_csv("sensor_data.csv")
 15. Os dados zipados podem ser acessados [aqui](https://github.com/Antonio-Borges-Rufino/IoT_Data_Enginer_Streamin/blob/main/data.zip), enquanto os dados únicos em um único DF podem ser acessados [aqui](https://github.com/Antonio-Borges-Rufino/IoT_Data_Enginer_Streamin/blob/main/sensor_data.csv)
 
 # Simulando o sensor + MQTT Broker
+1. Dada a dificuldade de usar um broker MQTT externo, decidi apenas simular uma conversa entre o kafka e o broker, para poder inserir no kafka os dados usei a biblioteca KafkaProducer do python.
+2. O código foi executado pelo jupyter notebook do ambiente virtual do cluster, para mais informações, acesso o cluster base proposto no início do projeto.
+3. O código foi dividido em 2 partes, uma foi para teste, a outra era para simular uma operação real de 1 hora, a que vai ser descrita é a de teste, que envia uma mensagem para o kafka de 5 em 5 segundos.
+4. Código do simulador:
+```
+producer = KafkaProducer(bootstrap_servers='localhost:9092')
+df = pd.read_csv("/home/hadoop/sensor_data.csv",usecols=['Lat','Lon','Temp'])
+ano = 2022
+mes = [0,1,2,3,4,5,6,7,8,9,10,11]
+dias = [31,28,31,30,31,30,31,31,30,31,30,31]
+dataset_posix = 0
+while True:
+    for mes_ in mes:
+        for dia in range(1,dias[mes_]+1):
+            for hora in range(0,24):
+                if dataset_posix%2 == 0:
+                    key_ = str(ano)+"-"+str(mes_+1)+"-"+str(dia)+"-"+str(hora)+"-"+"sensor1"
+                    key_ = key_.encode(encoding='utf-8')
+                    sensor = df.iloc[dataset_posix]
+                    sensor = str(sensor[2])
+                    value_ = sensor.encode(encoding='utf-8')
+                    producer.send('data_sensor', key=key_, value=value_)
+                    dataset_posix = dataset_posix + 1
+                    if dataset_posix >= len(df):
+                        dataset_posix = 0
+                else:
+                    key_ = str(ano)+"-"+str(mes_+1)+"-"+str(dia)+"-"+str(hora)+"-"+"sensor2"
+                    key_ = key_.encode(encoding='utf-8')
+                    sensor = df.iloc[dataset_posix]
+                    sensor = str(sensor[2])
+                    value_ = sensor.encode(encoding='utf-8')
+                    producer.send('data_sensor', key=key_, value=value_)
+                    dataset_posix = dataset_posix + 1
+                    if dataset_posix >= len(df):
+                        dataset_posix = 0
+                sleep(5)            
+    ano = ano + 1
+```
 
 ```
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1 /home/hadoop/Spark-GET-MQTT-Kafka-Data.py
