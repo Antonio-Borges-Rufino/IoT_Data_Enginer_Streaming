@@ -216,9 +216,9 @@ class RowPrinter:
 ```
 spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1 /home/hadoop/Spark-GET-MQTT-Kafka-Data.py
 ``` 
-12. Perceb-se a utilização da tag --packages, é ela quem indica o jar do tipo kafka. Esse jar não é nativo, portanto deve-se usar o apontador, e após a indicação do jar, coloca o caminho do arquivo python com o código pyspark e executa.
+12. Percebe-se a utilização da tag --packages, é ela quem indica o jar do tipo kafka. Esse jar não é nativo, portanto deve-se usar o apontador, e após a indicação do jar, coloca o caminho do arquivo python com o código pyspark e executa.
 13. O código vai ficar esperando até que o código de insert no kafka seja executado também.
 14. Para ver a construção completa do código, acesse [aqui](https://github.com/Antonio-Borges-Rufino/IoT_Data_Enginer_Streamin/blob/main/Spark-GET-MQTT-Kafka-Data.py).
 
-# Interface gráfica de acesso
+# Api de acesso
 1.
