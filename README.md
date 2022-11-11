@@ -221,4 +221,43 @@ spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1 /home/h
 14. Para ver a construção completa do código, acesse [aqui](https://github.com/Antonio-Borges-Rufino/IoT_Data_Enginer_Streamin/blob/main/Spark-GET-MQTT-Kafka-Data.py).
 
 # Api de acesso
-1.
+1. Para a construção da API de acesso aos dados, usou-se a biblioteca flask do python.
+2. A estrutura de acesso deve ser o link de acesso, que nesse caso é o servidor local 127.0.0.1/{ano}-{mes}-{dia}-{hora}.
+3. Todos os períodes menores que 10 não devem ter o 0 na frente, por exemplo: 127.0.0.1/2022-1-1-22. Para maiores que 10 ou igual é normal.
+4. A saída deve ser um json com os dados de ambos os sensores. No caso, sempre um sensor vai receber Null por causa da estrutura de inserção dos dados.
+5. O código da função get está descrito abaixo:
+```
+class TodoSimple(Resource):
+    def get(self, key):
+      get_data = redis.Redis('localhost',port=6379)
+      inform = str(key)+'-sensor1'
+      inform_ = str(key)+'-sensor2'
+      sensor1 = get_data.get(inform)
+      if sensor1 == None:
+        sensor1 = "None"
+      else:
+        sensor1 = sensor1.decode('UTF-8')
+        sensor1 = str(sensor1)
+      sensor2 = get_data.get(inform_)
+      if sensor2 == None:
+        sensor2 = "None"
+      else:
+        sensor2 = sensor2.decode('UTF-8')
+        sensor2 = str(sensor2)
+      return {"sensor1":sensor1,"sensor2":sensor2}
+```
+6. Explicando o código:  
+  -> 1. A classe TodoSimple(Resource) vai receber os links de acesso e a função get recebe os dados que vem do link.  
+  -> 2. A variavel get_data recebe a conexão com o redis, e as variaveis inform e inform_ recebem as strings de busca, acrescentando apenas qual o sensor deve ser buscado.  
+  -> 3. A variavel sensor1 é quem recebe o resultado do banco, e também é feita uma verificação para saber se foi retornado algum resultado. Essa verificação é necessária para que não de erro na hora de retornar o JSON.  
+  -> 4. A variavel sensor2 passa pelo exato mesmo processo da variavel sensor1.  
+  -> 5. Após isso, o servidor retorna a informação através de um JSON que é exibido na tela, como acontece em apisRest.  
+7. Depois da classe ser construida, instancia-se ela dentro do servidor utilizando:
+```
+api.add_resource(TodoSimple, '/<string:key>')
+```
+8. Para ligar o servidor, utilize o comando abaixo dentro do ambiente virtual projetos:
+```
+python3 /home/hadoop/API-Redis-Get-Data.py
+```
+9. Todo o código da API está disponível [aqui](https://github.com/Antonio-Borges-Rufino/IoT_Data_Enginer_Streamin/blob/main/API-Redis-Get-Data.py)
