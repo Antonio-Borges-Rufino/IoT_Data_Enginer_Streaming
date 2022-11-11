@@ -8,7 +8,7 @@
   -> 1. Colocar sensores de temperatura em lugares estratégicos.   
   -> 2. Coletar dados dos sensores em um espaço de tempo de 1 hora.  
   -> 3. Guardar esse dados em uma base de dados de fácil acesso.  
-  -> 4. Apresentar os dados de forma interativa através de uma interface gráfica.
+  -> 4. Construir uma api para acesso dos dados de forma fácil.
 3. Levando em consideração as especificações do projeto, decidiu-se usar um sistema big data de stream.
 
 # Arquitetura do projeto
@@ -19,7 +19,7 @@
 4. Depois que o kafka receber os dados dos sensores, as mensagens vão ser lidas pelo spark strean em tempo real, esse serviço deve ficar rodando no back-end.
 5. O spark não vai necessariamente precisar fazer algum tipo de análise nos dados, apesar de que isso pode ser muito bem vindo, pode-se futuramente trabalhar em identificações de anomalias.
 6. Por fim, o spark deve salvar o registro no banco de dados redis, essa base de dados foi escolhida pois é extremamente rápida e simples, podendo facilmente se utilizada na persistencia de dados em stream.
-7. Para facilitar a visualização dos dados, foi construída uma interface gráfica que deve mostrar graficamente e de qualquer máquina com acesso ao redis as informações em tempo real.
+7. Para facilitar o acesso aos dados, foi contruida uma apiRest para acessar os dados do redis.
 
 # Obtendo os dados e o problema do MQTT
 ![](https://github.com/Antonio-Borges-Rufino/IoT_Data_Enginer_Streamin/blob/main/SENSOR%201.PNG)
